@@ -57,6 +57,9 @@ namespace crypto {
     std::vector<Number> primitiveRoots(NumberView p, NumberView alpha);
     std::vector<Number> primitiveRoots(NumberView p, NumberView alpha, NumberView limit);
 
+    // Returns a cryptographycally secure integer in the range [min, max]
+    Number random(NumberView min, NumberView max);
+
     // ########## Function template specializations ##########
 
     template<>

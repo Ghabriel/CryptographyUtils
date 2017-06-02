@@ -1,4 +1,5 @@
 #include <cmath>
+#include <random>
 #include "debug.hpp"
 #include "utils.hpp"
 
@@ -142,4 +143,10 @@ Number crypto::phi(Number n, const std::vector<Number>& factors) {
         n *= (factor - 1);
     }
     return n;
+}
+
+Number crypto::random(NumberView min, NumberView max) {
+    static std::random_device rng;
+    auto value = (max - min) * rng();
+    return min + value / std::random_device::max();
 }

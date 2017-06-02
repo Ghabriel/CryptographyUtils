@@ -3,6 +3,7 @@
 using Number = crypto::Number;
 
 std::pair<Number, Number> crypto::DiffieHellman::genGlobalParams(std::size_t size) {
+    // Number p = random(0, (Number(2) << size) - 1);
     Number p = 137; // TODO
     auto alpha = primitiveRoot(p);
     return {p, alpha};
@@ -10,7 +11,7 @@ std::pair<Number, Number> crypto::DiffieHellman::genGlobalParams(std::size_t siz
 
 crypto::DiffieHellman::DiffieHellman(NumberView p, NumberView alpha)
  : p(p), alpha(alpha) {
-    privateKey = 63; // TODO
+    privateKey = random(1, p - 1); // TODO
     publicKey = pow(alpha, privateKey, p);
 }
 
