@@ -37,7 +37,7 @@ namespace crypto {
 
     // Integer factorization
     template<FactorizationAlgorithm Algorithm = FactorizationAlgorithm::naive>
-    std::vector<Number> factorize(NumberView n);
+    std::vector<Number> factorize(Number n);
 
     // Euler's totient function with a given list of prime factors
     Number phi(Number n, const std::vector<Number>& factors);
@@ -46,8 +46,10 @@ namespace crypto {
     template<TotientAlgorithm Algorithm = TotientAlgorithm::naive>
     Number phi(NumberView n);
 
-    // template<bool = false>
-    // Number primitiveRoot(NumberView n);
+    // Given a prime number p, returns a primitive root of p.
+    // Throws an exception if no root is found (which should happen
+    // only if p is not prime).
+    Number primitiveRoot(NumberView p);
 
     // Given a prime number p and a primitive root alpha, returns other
     // primitive roots of p. If a limit is specified, stops searching after
@@ -58,7 +60,7 @@ namespace crypto {
     // ########## Function template specializations ##########
 
     template<>
-    std::vector<Number> factorize<FactorizationAlgorithm::naive>(NumberView n);
+    std::vector<Number> factorize<FactorizationAlgorithm::naive>(Number n);
 
     template<>
     Number phi<TotientAlgorithm::naive>(NumberView n);

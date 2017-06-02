@@ -7,12 +7,20 @@ using Number = crypto::Number;
 
 int main(int, char**) {
     crypto::Number n = 137;
-    crypto::Number alpha = 3;
+    crypto::Number alpha = crypto::primitiveRoot(n);
+    std::cout << "n = " << n << std::endl;
+    std::cout << "Root found: " << alpha << std::endl;
+
     auto roots = crypto::primitiveRoots(n, alpha);
     std::sort(roots.begin(), roots.end());
-    std::cout << "Roots found: " << roots.size() << " (besides " << alpha << ")" << std::endl;
+    std::cout << "Other roots (" << roots.size() << "):" << std::endl;
+    bool first = true;
     for (auto& root : roots) {
-        std::cout << root << ", ";
+        if (!first) {
+            std::cout << ", ";
+        }
+        std::cout << root;
+        first = false;
     }
     std::cout << std::endl;
 }

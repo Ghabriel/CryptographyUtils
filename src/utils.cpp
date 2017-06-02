@@ -1,3 +1,5 @@
+#include <cmath>
+#include "debug.hpp"
 #include "utils.hpp"
 
 using crypto::Number;
@@ -45,6 +47,26 @@ Number crypto::pow(Number base, Number exponent, Number modulus) {
     });
 }
 
+Number crypto::primitiveRoot(NumberView p) {
+    auto totient = phi<TotientAlgorithm::prime>(p);
+    auto primeFactors = factorize<FactorizationAlgorithm::naive>(totient);
+    for (Number m = 2; m < p; ++m) {
+        bool success = true;
+        for (auto& factor : primeFactors) {
+            if (pow(m, totient / factor, p) == 1) {
+                success = false;
+                break;
+            }
+        }
+
+        if (success) {
+            return m;
+        }
+    }
+
+    throw 1;
+}
+
 template<typename F>
 std::vector<Number> crypto::detail::primitiveRoots(NumberView n, NumberView alpha, const F& threshold) {
     std::vector<Number> result;
@@ -75,9 +97,31 @@ std::vector<Number> crypto::primitiveRoots(NumberView p, NumberView alpha, Numbe
 }
 
 template<>
-std::vector<Number> crypto::factorize<FactorizationAlgorithm::naive>(NumberView n) {
-    // TODO
-    return {};
+std::vector<Number> crypto::factorize<FactorizationAlgorithm::naive>(Number n) {
+    std::vector<Number> result;
+    Number upperBound = n >> 1;
+
+    auto test = [&](NumberView i) {
+        if (n % i == 0) {
+            result.push_back(i);
+            while (n % i == 0) {
+                n /= i;
+            }
+            upperBound = n >> 1;
+        }
+    };
+
+    test(2);
+
+    for (Number i = 3; i <= upperBound; i += 2) {
+        test(i);
+    }
+
+    if (n > 1) {
+        result.push_back(n);
+    }
+
+    return result;
 }
 
 // Euler's totient function

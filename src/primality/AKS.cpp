@@ -24,7 +24,7 @@ bool crypto::AKS::test(NumberView n) {
         }
     }
 
-    auto boundary = floor(std::log2(n) * sqrt(phi(r)));
+    auto boundary = floor(std::log2(n) * std::sqrt(phi(r)));
     std::cout << "[AKS] boundary = " << boundary << std::endl;
     for (Number a = 1; a <= boundary; a++) {
         if (!testANR(a, n, r)) {
