@@ -17,7 +17,7 @@ int main(int, char**) {
     crypto::LucasLehmer ll;
     crypto::LucasLehmerRiesel llr;
 
-    using crypto::operations::pow;
+    using crypto::pow;
 
     for (Number i = 0; i < 10; i++) {
         Number p = primes[i];

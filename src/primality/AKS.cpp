@@ -24,7 +24,6 @@ bool crypto::AKS::test(NumberView n) {
         }
     }
 
-    using operations::phi;
     auto boundary = floor(std::log2(n) * sqrt(phi(r)));
     std::cout << "[AKS] boundary = " << boundary << std::endl;
     for (Number a = 1; a <= boundary; a++) {
@@ -43,7 +42,6 @@ bool crypto::AKS::isPerfectPower(NumberView n) {
         return true; // n = 2^k
     }
 
-    using operations::pow;
     for (Number i = 2; i <= lg; i++) {
         Number begin = 1;
         Number end = begin << Number(lg / i + 1);
@@ -68,7 +66,6 @@ crypto::Number crypto::AKS::findR(NumberView n) {
     // auto maxr = std::max(3, ceil(std::pow(lg, 5)));
     Number r = 2;
     bool loop = true;
-    using operations::pow;
     while (loop) {
         loop = false;
         for (Number k = 1; !loop && k <= maxk; k++) {

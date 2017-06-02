@@ -2,8 +2,9 @@
 
 using crypto::Number;
 using crypto::TotientAlgorithm;
+using crypto::FactorizationAlgorithm;
 
-Number crypto::operations::gcd(NumberView a, NumberView b) {
+Number crypto::gcd(NumberView a, NumberView b) {
     if (b == 0) {
         return a;
     }
@@ -11,7 +12,7 @@ Number crypto::operations::gcd(NumberView a, NumberView b) {
 }
 
 template<typename F>
-Number crypto::operations::detail::pow(Number base, Number exponent, const F& mult) {
+Number crypto::detail::pow(Number base, Number exponent, const F& mult) {
     Number result = 1;
     while (exponent > 0) {
         if (exponent & 1) {
@@ -23,15 +24,13 @@ Number crypto::operations::detail::pow(Number base, Number exponent, const F& mu
     return result;
 }
 
-// Fast exponentiation. Returns base^exponent.
-Number crypto::operations::pow(Number base, Number exponent) {
+Number crypto::pow(Number base, Number exponent) {
     return detail::pow(base, exponent, [](NumberView a, NumberView b) {
         return a * b;
     });
 }
 
-// Returns base^exponent mod modulus.
-Number crypto::operations::pow(Number base, Number exponent, Number modulus) {
+Number crypto::pow(Number base, Number exponent, Number modulus) {
     // Number result = 1;
     // while (exponent > 0) {
     //     if (exponent & 1) {
@@ -46,19 +45,54 @@ Number crypto::operations::pow(Number base, Number exponent, Number modulus) {
     });
 }
 
+template<typename F>
+std::vector<Number> crypto::detail::primitiveRoots(NumberView n, NumberView alpha, const F& threshold) {
+    std::vector<Number> result;
+    auto totient = phi<TotientAlgorithm::prime>(n);
+    Number i = 2;
+    while (i < n) {
+        if (gcd(totient, i) == 1) {
+            result.push_back(::crypto::pow(alpha, i, n));
+        }
+        ++i;
+        if (threshold(result.size())) {
+            break;
+        }
+    }
+    return result;
+}
+
+std::vector<Number> crypto::primitiveRoots(NumberView p, NumberView alpha) {
+    return detail::primitiveRoots(p, alpha, [](std::size_t size) {
+        return false;
+    });
+}
+
+std::vector<Number> crypto::primitiveRoots(NumberView p, NumberView alpha, NumberView limit) {
+    return detail::primitiveRoots(p, alpha, [&limit](std::size_t size) {
+        return size >= limit;
+    });
+}
+
+template<>
+std::vector<Number> crypto::factorize<FactorizationAlgorithm::naive>(NumberView n) {
+    // TODO
+    return {};
+}
+
 // Euler's totient function
 template<>
-Number crypto::operations::phi<TotientAlgorithm::naive>(NumberView n) {
+Number crypto::phi<TotientAlgorithm::naive>(NumberView n) {
     Number viable = 0;
-    for (Number i = 1; i < n; i++) {
+    for (Number i = 1; i < n; ++i) {
         if (gcd(n, i) == 1) {
-            viable++;
+            ++viable;
         }
     }
     return viable;
 }
 
-Number crypto::operations::phi(Number n, const std::vector<Number>& factors) {
+Number crypto::phi(Number n, const std::vector<Number>& factors) {
     for (const auto& factor : factors) {
         n /= factor;
         n *= (factor - 1);
