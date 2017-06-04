@@ -1,6 +1,5 @@
 #include <cmath>
 #include <random>
-#include "debug.hpp"
 #include "utils.hpp"
 
 using crypto::Number;
@@ -34,15 +33,6 @@ Number crypto::pow(Number base, Number exponent) {
 }
 
 Number crypto::pow(Number base, Number exponent, Number modulus) {
-    // Number result = 1;
-    // while (exponent > 0) {
-    //     if (exponent & 1) {
-    //         result = (result * base) % modulus;
-    //     }
-    //     base = (base * base) % modulus;
-    //     exponent >>= 1;
-    // }
-    // return result;
     return detail::pow(base, exponent, [&modulus](NumberView a, NumberView b) {
         return (a * b) % modulus;
     });
@@ -91,7 +81,7 @@ std::vector<Number> crypto::primitiveRoots(NumberView p, NumberView alpha) {
     });
 }
 
-std::vector<Number> crypto::primitiveRoots(NumberView p, NumberView alpha, NumberView limit) {
+std::vector<Number> crypto::primitiveRoots(NumberView p, NumberView alpha, std::size_t limit) {
     return detail::primitiveRoots(p, alpha, [&limit](std::size_t size) {
         return size >= limit;
     });
@@ -143,6 +133,39 @@ Number crypto::phi(Number n, const std::vector<Number>& factors) {
         n *= (factor - 1);
     }
     return n;
+}
+
+short crypto::jacobiSymbol(Number a, Number n) {
+    short result = 1;
+    while (a != 0) {
+        while (a % 2 == 0) {
+            a >>= 1;
+            auto mod = n % 8;
+            if (mod == 3 || mod == 5) {
+                result = -result;
+            }
+        }
+        std::swap(a, n);
+        if (a % 4 == 3 && n % 4 == 3) {
+            result = -result;
+        }
+        a %= n;
+    }
+
+    if (n == 1) {
+        return result;
+    }
+    return 0;
+}
+
+bool crypto::isPerfectSquare(NumberView n) {
+    Number prev = 0;
+    Number x = n;
+    while (std::abs(x - prev) > 5) {
+        prev = std::move(x);
+        x = (prev * prev + n) / (2 * prev);
+    }
+    return x * x == n;
 }
 
 Number crypto::random(NumberView min, NumberView max) {

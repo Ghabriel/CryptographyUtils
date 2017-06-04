@@ -55,9 +55,16 @@ namespace crypto {
     // primitive roots of p. If a limit is specified, stops searching after
     // 'limit' primitive roots are found, otherwise finds all of them.
     std::vector<Number> primitiveRoots(NumberView p, NumberView alpha);
-    std::vector<Number> primitiveRoots(NumberView p, NumberView alpha, NumberView limit);
+    std::vector<Number> primitiveRoots(NumberView p, NumberView alpha, std::size_t limit);
 
-    // Returns a cryptographycally secure integer in the range [min, max]
+    // Returns the Jacobi Symbol (a/n)
+    short jacobiSymbol(Number a, Number n);
+
+    // Checks if a given number is a perfect square, i.e
+    // has an integer square root.
+    bool isPerfectSquare(NumberView n);
+
+    // Returns a cryptographycally secure random integer in the range [min, max)
     Number random(NumberView min, NumberView max);
 
     // ########## Function template specializations ##########

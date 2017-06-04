@@ -11,7 +11,7 @@ std::pair<Number, Number> crypto::DiffieHellman::genGlobalParams(std::size_t siz
 
 crypto::DiffieHellman::DiffieHellman(NumberView p, NumberView alpha)
  : p(p), alpha(alpha) {
-    privateKey = random(1, p - 1); // TODO
+    privateKey = random(1, p);
     publicKey = pow(alpha, privateKey, p);
 }
 

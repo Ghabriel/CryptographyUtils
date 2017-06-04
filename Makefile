@@ -40,7 +40,7 @@ BINARIES  :=$(BINDIR)/execute_me
 # Compiler & linker flags
 CXXFLAGS :=-std=c++14 -Wall
 LDFLAGS  :=
-LDLIBS   :=
+LDLIBS   :=-lgtest -pthread
 INCLUDE  :=-I$(INCDIR)
 ### TESTS-RELATED VARIABLES
 # Files
