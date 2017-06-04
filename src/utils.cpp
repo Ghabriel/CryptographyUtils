@@ -33,6 +33,7 @@ Number crypto::pow(Number base, Number exponent) {
 }
 
 Number crypto::pow(Number base, Number exponent, Number modulus) {
+    base %= modulus;
     return detail::pow(base, exponent, [&modulus](NumberView a, NumberView b) {
         return (a * b) % modulus;
     });

@@ -1,6 +1,7 @@
 #ifndef MILLER_RABIN_HPP
 #define MILLER_RABIN_HPP
 
+#include <array>
 #include <vector>
 #include "traits.hpp"
 #include "utils.hpp"
@@ -14,6 +15,10 @@ namespace crypto {
             !std::is_convertible<Iterable, std::size_t>::value
         >::type>
         bool test(NumberView n, const Iterable& bases) const;
+
+        template<size_t N = 7>
+        constexpr static std::array<size_t, N> bestKnownBase();
+        static std::vector<size_t> bestKnownBase(size_t);
 
      private:
         template<typename Iterable>

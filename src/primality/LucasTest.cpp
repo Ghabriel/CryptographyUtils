@@ -44,5 +44,5 @@ bool crypto::LucasTest::test(NumberView n, NumberView d, NumberView p, NumberVie
         bits.pop();
     }
 
-    return u == 0;
+    return u == 0 && (v - 2 * q) % n == 0;
 }
