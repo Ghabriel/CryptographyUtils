@@ -23,8 +23,8 @@ template<typename F>
 Number crypto::detail::pow(Number base, Number exponent, const F& mult) {
     Number result = 1;
     while (exponent > 0) {
-        TRACE(result);
-        TRACE(base);
+        // TRACE(result);
+        // TRACE(base);
         if (exponent & 1) {
             result = mult(result, base);
         }
@@ -217,7 +217,8 @@ namespace crypto {
 }
 
 Number crypto::generatePrime() {
-    auto max = std::numeric_limits<Number>::max() / 100;
+    // auto max = std::numeric_limits<Number>::max() / 1000;
+    auto max = Number(2) << 33;
     auto min = max / 10;
 
     // TRACE(min);
@@ -225,29 +226,28 @@ Number crypto::generatePrime() {
     // TRACE(std::random_device::max());
     // return 0;
 
-    // auto value = random(min, max);
-    Number value = 67280421310721ull;
-    if (value % 2 == 0) {
-        ++value;
-    }
+    // Number value = 67280421310721ull;
+    // if (value % 2 == 0) {
+    //     ++value;
+    // }
+
+    // MillerRabin tester;
+    // ECHO(tester.test(value, std::vector<Number>{2}));
+    // assert(false);
+
+    auto value = random(min, max);
 
     MillerRabin tester;
-    ECHO(tester.test(value, std::vector<Number>{2}));
-    assert(false);
-
     Number attempts = 0;
-    // while (!tester.test(value, MillerRabin::bestKnownBase<7>())) {
-    while (!tester.test(value, std::vector<Number>{2})) {
-        // TRACE(value);
+    while (!tester.test(value, MillerRabin::bestKnownBase<7>())) {
+    // while (!tester.test(value, std::vector<Number>{2})) {
         value = random(min, max);
         while (value % 2 == 0 || value % 3 == 0 || value % 5 == 0) {
             ++value;
         }
         attempts++;
-        if (attempts % 1000 == 0) {
-            TRACE(attempts);
-        }
     }
 
+    TRACE(attempts);
     return value;
 }
