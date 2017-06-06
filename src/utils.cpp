@@ -2,6 +2,7 @@
 #include <fstream>
 #include <limits>
 #include <random>
+#include <sstream>
 #include "debug.hpp"
 #include "primality/MillerRabin.hpp"
 #include "utils.hpp"
@@ -22,6 +23,8 @@ template<typename F>
 Number crypto::detail::pow(Number base, Number exponent, const F& mult) {
     Number result = 1;
     while (exponent > 0) {
+        TRACE(result);
+        TRACE(base);
         if (exponent & 1) {
             result = mult(result, base);
         }
@@ -174,46 +177,77 @@ bool crypto::isPerfectSquare(NumberView n) {
     return x * x == n;
 }
 
-Number crypto::random(NumberView min, NumberView max) {
-    // static std::random_device rng;
-    // auto value = (max - min) * rng();
-    // return min + value / std::random_device::max();
+namespace crypto {
+    template<>
+    Number random<true>(NumberView min, NumberView max) {
+        // static std::random_device rng;
+        // auto value = (max - min) * rng();
+        // return min + value / std::random_device::max();
 
-    Number rng;
-    auto urandom = std::ifstream("/dev/urandom", std::ios::in|std::ios::binary);
-    assert(urandom);
-    urandom.read(reinterpret_cast<char*>(&rng), sizeof(rng));
-    assert(urandom);
+        // Number rng;
+        auto delta = max - min;
+        auto size = std::to_string(delta).size() + 1;
 
-    auto value = (max - min) * rng;
-    TRACE(rng);
-    TRACE(value);
-    TRACE(std::numeric_limits<Number>::max());
-    return min + value / std::numeric_limits<Number>::max();
+        // size_t size = 8 * sizeof(Number);
+        auto container = std::vector<char>(size, 0);
+        auto urandom = std::ifstream("/dev/urandom", std::ios::in|std::ios::binary);
+        assert(urandom);
+        // urandom.read(reinterpret_cast<char*>(&rng), 1);
+        urandom.read(container.data(), size);
+        assert(urandom);
+
+
+        std::stringstream ss;
+        for (auto& value : container) {
+            ss << std::abs(value % 10);
+        }
+
+        auto value = stoull(ss.str()) + std::random_device()();
+        // TRACE(delta);
+        // TRACE(ss.str());
+
+        // auto value = (max - min) * rng;
+        // TRACE(rng);
+        // TRACE(value);
+        // TRACE(std::numeric_limits<Number>::max());
+        // return min + value / std::numeric_limits<Number>::max();
+        // ECHO("--------------");
+        return (value % delta) + min;
+    }
 }
 
 Number crypto::generatePrime() {
-    auto max = std::numeric_limits<Number>::max();
+    auto max = std::numeric_limits<Number>::max() / 100;
     auto min = max / 10;
 
-    TRACE(min);
-    TRACE(max);
-    TRACE(std::random_device::max());
-    return 0;
+    // TRACE(min);
+    // TRACE(max);
+    // TRACE(std::random_device::max());
+    // return 0;
 
     // auto value = random(min, max);
-    // if (value % 2 == 0) {
-    //     ++value;
-    // }
+    Number value = 67280421310721ull;
+    if (value % 2 == 0) {
+        ++value;
+    }
 
-    // MillerRabin tester;
+    MillerRabin tester;
+    ECHO(tester.test(value, std::vector<Number>{2}));
+    assert(false);
+
+    Number attempts = 0;
     // while (!tester.test(value, MillerRabin::bestKnownBase<7>())) {
-    //     TRACE_L(std::to_string(max), value);
-    //     value = random(min, max);
-    //     while (value % 2 == 0 || value % 3 == 0 || value % 5 == 0) {
-    //         ++value;
-    //     }
-    // }
+    while (!tester.test(value, std::vector<Number>{2})) {
+        // TRACE(value);
+        value = random(min, max);
+        while (value % 2 == 0 || value % 3 == 0 || value % 5 == 0) {
+            ++value;
+        }
+        attempts++;
+        if (attempts % 1000 == 0) {
+            TRACE(attempts);
+        }
+    }
 
-    // return value;
+    return value;
 }

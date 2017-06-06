@@ -65,6 +65,7 @@ namespace crypto {
     bool isPerfectSquare(NumberView n);
 
     // Returns a cryptographycally secure random integer in the range [min, max)
+    template<bool = std::is_integral<Number>::value>
     Number random(NumberView min, NumberView max);
 
     Number generatePrime();
