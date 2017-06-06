@@ -8,8 +8,13 @@
 using crypto::Number;
 
 int main(int, char**) {
-    crypto::AKS tester;
+    // crypto::AKS tester;
 
-    Number n = 31;
-    std::cout << tester.test(n) << std::endl;
+    // Number n = 31;
+    // std::cout << tester.test(n) << std::endl;
+
+    // std::cout << crypto::generatePrime() << std::endl;
+    for (size_t i = 0; i < 5; i++) {
+        std::cout << crypto::random(0, 10) << std::endl;
+    }
 }

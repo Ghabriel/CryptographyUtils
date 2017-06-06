@@ -67,6 +67,8 @@ namespace crypto {
     // Returns a cryptographycally secure random integer in the range [min, max)
     Number random(NumberView min, NumberView max);
 
+    Number generatePrime();
+
     // ########## Function template specializations ##########
 
     template<>

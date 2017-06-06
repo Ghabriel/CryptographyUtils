@@ -1,6 +1,11 @@
 #include <cmath>
+#include <fstream>
+#include <limits>
 #include <random>
+#include "debug.hpp"
+#include "primality/MillerRabin.hpp"
 #include "utils.hpp"
+
 
 using crypto::Number;
 using crypto::TotientAlgorithm;
@@ -170,7 +175,45 @@ bool crypto::isPerfectSquare(NumberView n) {
 }
 
 Number crypto::random(NumberView min, NumberView max) {
-    static std::random_device rng;
-    auto value = (max - min) * rng();
-    return min + value / std::random_device::max();
+    // static std::random_device rng;
+    // auto value = (max - min) * rng();
+    // return min + value / std::random_device::max();
+
+    Number rng;
+    auto urandom = std::ifstream("/dev/urandom", std::ios::in|std::ios::binary);
+    assert(urandom);
+    urandom.read(reinterpret_cast<char*>(&rng), sizeof(rng));
+    assert(urandom);
+
+    auto value = (max - min) * rng;
+    TRACE(rng);
+    TRACE(value);
+    TRACE(std::numeric_limits<Number>::max());
+    return min + value / std::numeric_limits<Number>::max();
+}
+
+Number crypto::generatePrime() {
+    auto max = std::numeric_limits<Number>::max();
+    auto min = max / 10;
+
+    TRACE(min);
+    TRACE(max);
+    TRACE(std::random_device::max());
+    return 0;
+
+    // auto value = random(min, max);
+    // if (value % 2 == 0) {
+    //     ++value;
+    // }
+
+    // MillerRabin tester;
+    // while (!tester.test(value, MillerRabin::bestKnownBase<7>())) {
+    //     TRACE_L(std::to_string(max), value);
+    //     value = random(min, max);
+    //     while (value % 2 == 0 || value % 3 == 0 || value % 5 == 0) {
+    //         ++value;
+    //     }
+    // }
+
+    // return value;
 }
