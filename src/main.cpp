@@ -10,6 +10,7 @@
 
 int main(int, char**) {
     using crypto::Number;
+    using crypto::NumberView;
 
     // crypto::AKS tester;
 
@@ -37,8 +38,7 @@ int main(int, char**) {
     //     std::cout << i << ": " << values[i] << " (" << percent << "%)" << std::endl;
     // }
 
-    // std::cout << crypto::pow(2, 262814145745ull, 67280421310721ull) << std::endl;
-    // for (size_t i = 0; i < 10; i++) {
+    for (size_t i = 0; i < 10; i++) {
         std::cout << crypto::generatePrime() << std::endl;
-    // }
+    }
 }

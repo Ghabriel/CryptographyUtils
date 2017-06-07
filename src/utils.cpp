@@ -9,6 +9,7 @@
 
 
 using crypto::Number;
+using crypto::NumberView;
 using crypto::TotientAlgorithm;
 using crypto::FactorizationAlgorithm;
 
@@ -23,8 +24,6 @@ template<typename F>
 Number crypto::detail::pow(Number base, Number exponent, const F& mult) {
     Number result = 1;
     while (exponent > 0) {
-        // TRACE(result);
-        // TRACE(base);
         if (exponent & 1) {
             result = mult(result, base);
         }
@@ -40,11 +39,38 @@ Number crypto::pow(Number base, Number exponent) {
     });
 }
 
+// Number crypto::pow(Number base, Number exponent, Number modulus) {
+//     base %= modulus;
+//     TRACE(modulus);
+//     return detail::pow(base, exponent, [&modulus](NumberView a, NumberView b) {
+//         return (a * b) % modulus;
+//     });
+// }
+
 Number crypto::pow(Number base, Number exponent, Number modulus) {
     base %= modulus;
-    return detail::pow(base, exponent, [&modulus](NumberView a, NumberView b) {
-        return (a * b) % modulus;
+    return detail::pow(base, exponent, [&modulus](Number a, Number b) {
+        return multmod(a, b, modulus);
     });
+}
+
+Number crypto::multmod(Number a, Number b, NumberView modulus) {
+    // TODO: is it worth to do a %= modulus; b %= modulus;?
+    auto product = a * b;
+    // Uses Russian Peasant multiplication if there's an overflow
+    if (a != 0 && product / a != b) {
+        Number result = 0;
+        while (b > 0) {
+            if (b & 1) {
+                result = (result + a) % modulus;
+            }
+            a = (a << 1) % modulus;
+            b >>= 1;
+        }
+        return result;
+    } else {
+        return product % modulus;
+    }
 }
 
 Number crypto::primitiveRoot(NumberView p) {
@@ -124,7 +150,6 @@ std::vector<Number> crypto::factorize<FactorizationAlgorithm::naive>(Number n) {
     return result;
 }
 
-// Euler's totient function
 template<>
 Number crypto::phi<TotientAlgorithm::naive>(NumberView n) {
     Number viable = 0;
@@ -217,28 +242,16 @@ namespace crypto {
 }
 
 Number crypto::generatePrime() {
-    // auto max = std::numeric_limits<Number>::max() / 1000;
-    auto max = Number(2) << 33;
-    auto min = max / 10;
-
-    // TRACE(min);
-    // TRACE(max);
-    // TRACE(std::random_device::max());
-    // return 0;
-
-    // Number value = 67280421310721ull;
-    // if (value % 2 == 0) {
-    //     ++value;
-    // }
-
-    // MillerRabin tester;
-    // ECHO(tester.test(value, std::vector<Number>{2}));
-    // assert(false);
+    auto max = std::numeric_limits<Number>::max() / 10;
+    auto min = 0;
 
     auto value = random(min, max);
+    if (value % 2 == 0) {
+        ++value;
+    }
 
     MillerRabin tester;
-    Number attempts = 0;
+    Number attempts = 1;
     while (!tester.test(value, MillerRabin::bestKnownBase<7>())) {
     // while (!tester.test(value, std::vector<Number>{2})) {
         value = random(min, max);

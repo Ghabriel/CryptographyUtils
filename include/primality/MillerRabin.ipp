@@ -85,17 +85,13 @@ inline bool crypto::MillerRabin::internalTest(NumberView n, const Iterable& base
         }
 
         auto x = pow(base, d, n);
-        // TRACE(base);
-        // TRACE(d);
-        // TRACE(n);
-        // TRACE(x);
         if (x == 1 || x == n - 1) {
             continue;
         }
 
         bool skip = false;
         for (Number i = 0; i < r - 1; i++) {
-            x = (x * x) % n;
+            x = multmod(x, x, n);
             if (x == 1) {
                 return false;
             }

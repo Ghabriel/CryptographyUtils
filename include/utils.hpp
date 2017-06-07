@@ -35,6 +35,9 @@ namespace crypto {
     // Returns base^exponent mod modulus.
     Number pow(Number base, Number exponent, Number modulus);
 
+    // Returns (a * b) % modulus. Works even if a * b overflows.
+    Number multmod(Number a, Number b, NumberView modulus);
+
     // Integer factorization
     template<FactorizationAlgorithm Algorithm = FactorizationAlgorithm::naive>
     std::vector<Number> factorize(Number n);
