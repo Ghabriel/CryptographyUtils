@@ -1,11 +1,15 @@
 #include "DiffieHellman.hpp"
+#include "debug.hpp"
 
 using Number = crypto::Number;
 
 std::pair<Number, Number> crypto::DiffieHellman::genGlobalParams(std::size_t size) {
     // Number p = random(0, (Number(2) << size) - 1);
     Number p = 137; // TODO
+    // Number p = generatePrime();
+    TRACE(p);
     auto alpha = primitiveRoot(p);
+    TRACE(alpha);
     return {p, alpha};
 }
 

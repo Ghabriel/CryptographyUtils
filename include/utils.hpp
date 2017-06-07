@@ -23,6 +23,10 @@ namespace crypto {
         std::vector<Number> primitiveRoots(NumberView, NumberView, const F&);
     }
 
+    // Returns a cryptographycally secure random integer in the range [min, max)
+    template<bool = std::is_integral<Number>::value>
+    Number random(NumberView min, NumberView max);
+
     Number gcd(NumberView a, NumberView b);
 
     inline Number lcm(NumberView a, NumberView b) {
@@ -66,10 +70,6 @@ namespace crypto {
     // Checks if a given number is a perfect square, i.e
     // has an integer square root.
     bool isPerfectSquare(NumberView n);
-
-    // Returns a cryptographycally secure random integer in the range [min, max)
-    template<bool = std::is_integral<Number>::value>
-    Number random(NumberView min, NumberView max);
 
     Number generatePrime();
 

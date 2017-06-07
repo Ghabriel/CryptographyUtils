@@ -7,11 +7,49 @@
 #include "primality/MillerRabin.hpp"
 #include "utils.hpp"
 
-
 using crypto::Number;
 using crypto::NumberView;
 using crypto::TotientAlgorithm;
 using crypto::FactorizationAlgorithm;
+
+namespace crypto {
+    template<>
+    Number random<true>(NumberView min, NumberView max) {
+        // static std::random_device rng;
+        // auto value = (max - min) * rng();
+        // return min + value / std::random_device::max();
+
+        // Number rng;
+        auto delta = max - min;
+        auto size = std::to_string(delta).size() + 1;
+
+        // size_t size = 8 * sizeof(Number);
+        auto container = std::vector<char>(size, 0);
+        auto urandom = std::ifstream("/dev/urandom", std::ios::in|std::ios::binary);
+        assert(urandom);
+        // urandom.read(reinterpret_cast<char*>(&rng), 1);
+        urandom.read(container.data(), size);
+        assert(urandom);
+
+
+        std::stringstream ss;
+        for (auto& value : container) {
+            ss << std::abs(value % 10);
+        }
+
+        auto value = stoull(ss.str()) + std::random_device()();
+        // TRACE(delta);
+        // TRACE(ss.str());
+
+        // auto value = (max - min) * rng;
+        // TRACE(rng);
+        // TRACE(value);
+        // TRACE(std::numeric_limits<Number>::max());
+        // return min + value / std::numeric_limits<Number>::max();
+        // ECHO("--------------");
+        return (value % delta) + min;
+    }
+}
 
 Number crypto::gcd(NumberView a, NumberView b) {
     if (b == 0) {
@@ -72,6 +110,15 @@ Number crypto::multmod(Number a, Number b, NumberView modulus) {
         return product % modulus;
     }
 }
+
+// Number crypto::primitiveRoot(NumberView p) {
+//     while (true) {
+//         auto candidate = random(0, p);
+//         if (pow(candidate, (p - 1)/2, p) == p - 1) {
+//             return candidate;
+//         }
+//     }
+// }
 
 Number crypto::primitiveRoot(NumberView p) {
     auto totient = phi<TotientAlgorithm::prime>(p);
@@ -200,45 +247,6 @@ bool crypto::isPerfectSquare(NumberView n) {
         x = (prev * prev + n) / (2 * prev);
     }
     return x * x == n;
-}
-
-namespace crypto {
-    template<>
-    Number random<true>(NumberView min, NumberView max) {
-        // static std::random_device rng;
-        // auto value = (max - min) * rng();
-        // return min + value / std::random_device::max();
-
-        // Number rng;
-        auto delta = max - min;
-        auto size = std::to_string(delta).size() + 1;
-
-        // size_t size = 8 * sizeof(Number);
-        auto container = std::vector<char>(size, 0);
-        auto urandom = std::ifstream("/dev/urandom", std::ios::in|std::ios::binary);
-        assert(urandom);
-        // urandom.read(reinterpret_cast<char*>(&rng), 1);
-        urandom.read(container.data(), size);
-        assert(urandom);
-
-
-        std::stringstream ss;
-        for (auto& value : container) {
-            ss << std::abs(value % 10);
-        }
-
-        auto value = stoull(ss.str()) + std::random_device()();
-        // TRACE(delta);
-        // TRACE(ss.str());
-
-        // auto value = (max - min) * rng;
-        // TRACE(rng);
-        // TRACE(value);
-        // TRACE(std::numeric_limits<Number>::max());
-        // return min + value / std::numeric_limits<Number>::max();
-        // ECHO("--------------");
-        return (value % delta) + min;
-    }
 }
 
 Number crypto::generatePrime() {
