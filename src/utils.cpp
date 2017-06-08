@@ -31,7 +31,6 @@ namespace crypto {
         urandom.read(container.data(), size);
         assert(urandom);
 
-
         std::stringstream ss;
         for (auto& value : container) {
             ss << std::abs(value % 10);
@@ -249,26 +248,19 @@ bool crypto::isPerfectSquare(NumberView n) {
     return x * x == n;
 }
 
-Number crypto::generatePrime() {
-    auto max = std::numeric_limits<Number>::max() / 10;
-    auto min = 0;
-
+Number crypto::generatePrime(NumberView min, NumberView max) {
     auto value = random(min, max);
     if (value % 2 == 0) {
         ++value;
     }
 
     MillerRabin tester;
-    Number attempts = 1;
     while (!tester.test(value, MillerRabin::bestKnownBase<7>())) {
-    // while (!tester.test(value, std::vector<Number>{2})) {
         value = random(min, max);
         while (value % 2 == 0 || value % 3 == 0 || value % 5 == 0) {
             ++value;
         }
-        attempts++;
     }
 
-    TRACE(attempts);
     return value;
 }

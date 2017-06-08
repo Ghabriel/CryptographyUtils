@@ -71,7 +71,14 @@ namespace crypto {
     // has an integer square root.
     bool isPerfectSquare(NumberView n);
 
-    Number generatePrime();
+    // Generates a prime number in the range [min, max)
+    Number generatePrime(NumberView min, NumberView max);
+
+    // Generates a prime number with a given number of bits
+    inline Number generatePrime(NumberView bitCount) {
+        Number min = pow(2, bitCount - 1);
+        return generatePrime(min, min << 1);
+    }
 
     // ########## Function template specializations ##########
 

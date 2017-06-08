@@ -1,20 +1,23 @@
 #include "DiffieHellman.hpp"
+#include "primality/MillerRabin.hpp"
 #include "debug.hpp"
 
 using Number = crypto::Number;
 
+// Based on: https://crypto.stackexchange.com/questions/820/how-does-one-calculate-a-primitive-root-for-diffie-hellman?rq=1
 std::pair<Number, Number> crypto::DiffieHellman::genGlobalParams(std::size_t size) {
-    // Number p = random(0, (Number(2) << size) - 1);
-    Number p = 137; // TODO
-    // Number p = generatePrime();
-    TRACE(p);
-    auto alpha = primitiveRoot(p);
-    TRACE(alpha);
-    return {p, alpha};
+    MillerRabin tester;
+    Number q;
+    Number p;
+    do {
+        q = generatePrime(size - 1);
+        p = 2 * q + 1;
+    } while (!tester.test(p, MillerRabin::bestKnownBase<7>()));
+
+    return {p, random(2, p - 1)};
 }
 
-crypto::DiffieHellman::DiffieHellman(NumberView p, NumberView alpha)
- : p(p), alpha(alpha) {
+crypto::DiffieHellman::DiffieHellman(NumberView p, NumberView alpha) : p(p) {
     privateKey = random(1, p);
     publicKey = pow(alpha, privateKey, p);
 }

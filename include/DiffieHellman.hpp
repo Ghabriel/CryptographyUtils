@@ -20,7 +20,6 @@ namespace crypto {
 
      private:
         Number p;
-        Number alpha;
         Number publicKey;
         Number privateKey;
     };
