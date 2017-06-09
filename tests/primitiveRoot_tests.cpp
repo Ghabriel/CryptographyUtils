@@ -3,7 +3,7 @@
 #include "traits.hpp"
 #include "utils.hpp"
 
-using Number = crypto::Number;
+using crypto::Number;
 
 int main(int, char**) {
     crypto::Number n = 137;

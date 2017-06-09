@@ -7,6 +7,7 @@
 #include "primality/AKS.hpp"
 #include "traits.hpp"
 #include "utils.hpp"
+#include "xtrace.hpp"
 
 int main(int, char**) {
     using crypto::Number;
@@ -38,7 +39,5 @@ int main(int, char**) {
     //     std::cout << i << ": " << values[i] << " (" << percent << "%)" << std::endl;
     // }
 
-    for (size_t i = 0; i < 10; i++) {
-        std::cout << crypto::generatePrime() << std::endl;
-    }
+    XTRACE(crypto::xgcd(29, 12));
 }

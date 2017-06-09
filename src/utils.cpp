@@ -50,11 +50,45 @@ namespace crypto {
     }
 }
 
-Number crypto::gcd(NumberView a, NumberView b) {
-    if (b == 0) {
-        return a;
+Number crypto::gcd(Number a, Number b) {
+    while (b != 0) {
+        std::swap(a, b);
+        b %= a;
     }
-    return gcd(b, a % b);
+    return a;
+}
+
+std::tuple<Number, Number, Number> crypto::xgcd(Number a, Number b) {
+    Number previousX = 1;
+    Number previousY = 0;
+    Number x = 0;
+    Number y = 1;
+    Number quotient;
+    while (b != 0) {
+        quotient = a / b;
+        std::swap(previousX, x);
+        std::swap(previousY, y);
+        x -= previousX * quotient;
+        y -= previousY * quotient;
+        a %= b;
+        std::swap(a, b);
+    }
+
+    return std::make_tuple(previousX, previousY, a);
+}
+
+Number crypto::multInverse(NumberView n, NumberView modulus) {
+    auto data = xgcd(n, modulus);
+    if (std::get<2>(data) != 1) {
+        throw 42;
+    }
+
+    auto& result = std::get<0>(data);
+    if (result < 0) {
+        result += modulus;
+    }
+
+    return result;
 }
 
 template<typename F>

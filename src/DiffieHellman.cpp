@@ -2,7 +2,7 @@
 #include "primality/MillerRabin.hpp"
 #include "debug.hpp"
 
-using Number = crypto::Number;
+using crypto::Number;
 
 // Based on: https://crypto.stackexchange.com/questions/820/how-does-one-calculate-a-primitive-root-for-diffie-hellman?rq=1
 std::pair<Number, Number> crypto::DiffieHellman::genGlobalParams(std::size_t size) {

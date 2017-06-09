@@ -1,11 +1,9 @@
-#include <algorithm>
-#include <iostream>
 #include "debug.hpp"
 #include "DiffieHellman.hpp"
 #include "traits.hpp"
 #include "xtrace.hpp"
 
-using Number = crypto::Number;
+using crypto::Number;
 
 int main(int, char**) {
     using crypto::DiffieHellman;

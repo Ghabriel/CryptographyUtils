@@ -27,11 +27,17 @@ namespace crypto {
     template<bool = std::is_integral<Number>::value>
     Number random(NumberView min, NumberView max);
 
-    Number gcd(NumberView a, NumberView b);
+    Number gcd(Number a, Number b);
+
+    // Returns a tuple {x, y, z} such that ax + by = z and z = gcd(a, b)
+    std::tuple<Number, Number, Number> xgcd(Number a, Number b);
 
     inline Number lcm(NumberView a, NumberView b) {
-        return (a * b) / gcd(a, b);
+        // return (a * b) / gcd(a, b);
+        return a * (b / gcd(a, b));
     }
+
+    Number multInverse(NumberView n, NumberView modulus);
 
     // Fast exponentiation. Returns base^exponent.
     Number pow(Number base, Number exponent);
