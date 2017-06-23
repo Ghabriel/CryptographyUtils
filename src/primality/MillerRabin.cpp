@@ -9,7 +9,7 @@ bool crypto::MillerRabin::test(NumberView n, NumberView accuracy) const {
     }
 
     std::unordered_set<Number> bases;
-    auto size = std::min(accuracy, n - 3);
+    std::size_t size = std::min(accuracy, n - 3);
     while (bases.size() < size) {
         bases.insert(random(2, n - 1));
     }
