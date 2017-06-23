@@ -37,7 +37,7 @@ Number crypto::AsmuthBloom::reconstruct(const std::pair<Number, PartGroup>& data
 }
 
 Number crypto::AsmuthBloom::reconstruct(NumberView m0, const PartGroup& parts) const {
-	intmax_t numParts = parts.size();
+    intmax_t numParts = parts.size();
     if (numParts < k) {
         // throw InsufficientPartsException(k, parts.size());
         throw 42;
