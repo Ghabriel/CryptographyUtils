@@ -31,7 +31,8 @@ PartGroup crypto::ShamirScheme::split(NumberView secret) const {
 }
 
 Number crypto::ShamirScheme::reconstruct(const PartGroup& parts) const {
-    if (parts.size() < k) {
+    intmax_t numParts = parts.size();
+    if (numParts < k) {
         throw InsufficientPartsException(k, parts.size());
     }
 

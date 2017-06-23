@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <vector>
 #include <unordered_set>
 #include "AsmuthBloom.hpp"
@@ -36,7 +37,8 @@ Number crypto::AsmuthBloom::reconstruct(const std::pair<Number, PartGroup>& data
 }
 
 Number crypto::AsmuthBloom::reconstruct(NumberView m0, const PartGroup& parts) const {
-    if (parts.size() < k) {
+	intmax_t numParts = parts.size();
+    if (numParts < k) {
         // throw InsufficientPartsException(k, parts.size());
         throw 42;
     }
@@ -63,12 +65,16 @@ std::vector<Number> crypto::AsmuthBloom::generateSequence(NumberView secret) con
     while (true) {
         mSet.insert(generatePrime(initMinBound, initMaxBound));
 
-        while (mSet.size() < n + 1) {
+        intmax_t setSize = mSet.size();
+        while (setSize < n + 1) {
             mSet.insert(generatePrime(minBound, maxBound));
+            setSize = mSet.size();
         }
 
         m.clear();
         std::copy(mSet.begin(), mSet.end(), std::back_inserter(m));
+        std::sort(m.begin(), m.end());
+        XTRACE(m);
 
         Number lhs = 1;
         for (Number i = n - k + 2; i <= n; i++) {

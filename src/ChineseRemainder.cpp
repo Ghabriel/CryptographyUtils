@@ -19,9 +19,12 @@ Number crypto::ChineseRemainder::eval() const {
 		auto& a2 = pairs[1].first;
 		auto x = a1 * std::get<1>(params) * n2 + a2 * std::get<0>(params) * n1;
 
+		auto modulus = n1 * n2;
+		x %= modulus;
+
 		pairs.pop_front();
 		pairs.pop_front();
-		pairs.push_front({x, n1 * n2});
+		pairs.push_front({x, modulus});
 	}
 
 	auto& result = pairs[0].first;
