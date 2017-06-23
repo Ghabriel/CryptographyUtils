@@ -3,7 +3,7 @@
 #include <limits>
 #include <random>
 #include <sstream>
-#include "debug.hpp"
+#include <tuple>
 #include "primality/MillerRabin.hpp"
 #include "utils.hpp"
 

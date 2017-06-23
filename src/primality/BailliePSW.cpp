@@ -1,4 +1,7 @@
 #include "primality/BailliePSW.hpp"
+#include "primality/MillerRabin.hpp"
+#include "primality/LucasTest.hpp"
+#include "utils.hpp"
 
 bool crypto::BailliePSW::test(NumberView n) const {
     if (n < 3 || n % 2 == 0) {

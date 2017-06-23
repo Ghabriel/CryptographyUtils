@@ -1,5 +1,6 @@
 #include <stack>
 #include "primality/LucasTest.hpp"
+#include "utils.hpp"
 
 bool crypto::LucasTest::test(NumberView n, NumberView d, NumberView p, NumberView q) const {
     Number u = 0;

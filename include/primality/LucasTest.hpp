@@ -2,7 +2,6 @@
 #define LUCAS_TEST_HPP
 
 #include "traits.hpp"
-#include "utils.hpp"
 
 namespace crypto {
     class LucasTest {

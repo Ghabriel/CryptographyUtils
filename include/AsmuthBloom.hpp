@@ -1,9 +1,8 @@
 #ifndef ASMUTH_BLOOM_HPP
 #define ASMUTH_BLOOM_HPP
 
-#include "ChineseRemainder.hpp"
+#include <vector>
 #include "traits.hpp"
-#include "utils.hpp"
 
 namespace crypto {
     class AsmuthBloom {

@@ -1,6 +1,6 @@
 #include "DiffieHellman.hpp"
 #include "primality/MillerRabin.hpp"
-#include "debug.hpp"
+#include "utils.hpp"
 
 using crypto::Number;
 

@@ -4,7 +4,6 @@
 #include <cmath>
 #include <utility>
 #include "traits.hpp"
-#include "utils.hpp"
 
 namespace crypto {
     using RSAKey = std::pair<Number, Number>;

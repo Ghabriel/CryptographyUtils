@@ -1,7 +1,7 @@
 #include <cassert>
-#include "debug.hpp"
-#include "xtrace.hpp"
 #include "ShamirScheme.hpp"
+#include "SecretSharingExceptions.hpp"
+#include "utils.hpp"
 
 using crypto::Number;
 using PartGroup = crypto::ShamirScheme::PartGroup;

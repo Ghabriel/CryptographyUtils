@@ -4,7 +4,6 @@
 #include <array>
 #include <vector>
 #include "traits.hpp"
-#include "utils.hpp"
 
 namespace crypto {
     class MillerRabin {

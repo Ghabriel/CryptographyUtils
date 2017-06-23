@@ -3,7 +3,6 @@
 
 #include <utility>
 #include "traits.hpp"
-#include "utils.hpp"
 
 namespace crypto {
     class DiffieHellman {

@@ -2,8 +2,9 @@
 #include <vector>
 #include <unordered_set>
 #include "AsmuthBloom.hpp"
-#include "debug.hpp"
-#include "xtrace.hpp"
+#include "ChineseRemainder.hpp"
+#include "SecretSharingExceptions.hpp"
+#include "utils.hpp"
 
 using crypto::Number;
 using PartGroup = crypto::AsmuthBloom::PartGroup;
@@ -39,8 +40,7 @@ Number crypto::AsmuthBloom::reconstruct(const std::pair<Number, PartGroup>& data
 Number crypto::AsmuthBloom::reconstruct(NumberView m0, const PartGroup& parts) const {
     intmax_t numParts = parts.size();
     if (numParts < k) {
-        // throw InsufficientPartsException(k, parts.size());
-        throw 42;
+        throw InsufficientPartsException(k, parts.size());
     }
 
     ChineseRemainder calculator;
@@ -74,7 +74,6 @@ std::vector<Number> crypto::AsmuthBloom::generateSequence(NumberView secret) con
         m.clear();
         std::copy(mSet.begin(), mSet.end(), std::back_inserter(m));
         std::sort(m.begin(), m.end());
-        XTRACE(m);
 
         Number lhs = 1;
         for (Number i = n - k + 2; i <= n; i++) {

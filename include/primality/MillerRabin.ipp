@@ -1,4 +1,5 @@
 #include <cassert>
+#include "utils.hpp"
 
 namespace crypto {
     template<>

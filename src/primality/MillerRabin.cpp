@@ -1,5 +1,6 @@
 #include <unordered_set>
 #include "primality/MillerRabin.hpp"
+#include "utils.hpp"
 
 using crypto::Number;
 

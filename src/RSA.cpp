@@ -1,7 +1,7 @@
 #include <cassert>
 #include <tuple>
-#include "debug.hpp"
 #include "RSA.hpp"
+#include "utils.hpp"
 
 using crypto::Number;
 using crypto::RSAKey;

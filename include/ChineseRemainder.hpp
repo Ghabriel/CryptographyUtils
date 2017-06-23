@@ -3,7 +3,6 @@
 
 #include <deque>
 #include "traits.hpp"
-#include "utils.hpp"
 
 namespace crypto {
     class ChineseRemainder {
