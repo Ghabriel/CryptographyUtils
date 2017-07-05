@@ -3,6 +3,8 @@
 
 #include <cstdint>
 #include <string>
+#include <vector>
+#include <unordered_map>
 #include "traits.hpp"
 
 namespace crypto {
@@ -12,6 +14,8 @@ namespace crypto {
         using HalfKey = uint8_t;
         std::string apply(InputType message, const InputType& key) const;
 
+        const static std::unordered_map<HalfKey, HalfKey> sbox;
+
      private:
         std::vector<HalfKey> keyExpansion(const InputType& key) const;
 
@@ -20,7 +24,11 @@ namespace crypto {
         }
 
         HalfKey rotateNibbles(const HalfKey& value) const {
-            return ((value & 0xFF) << 4) | ((value & 0xFF00) >> 4);
+            return ((value & 0x0F) << 2) | ((value & 0xF0) >> 2);
+        }
+
+        HalfKey substNibbles(const HalfKey& value) const {
+            return (sbox.at(value & 0xF0) << 4) | sbox.at(value & 0x0F);
         }
     };
 }
