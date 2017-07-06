@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include "traits.hpp"
 
 namespace crypto {
     class SAES {
@@ -26,7 +25,7 @@ namespace crypto {
 
         template<typename T>
         uint8_t nibble(const T& value, size_t index) const {
-            size_t numNibbles = 2 * sizeof(value);
+            constexpr size_t numNibbles = 2 * sizeof(value);
             auto shift = 4 * (numNibbles - index - 1);
             auto mask = 0xF << shift;
             return (value & mask) >> shift;
@@ -43,7 +42,7 @@ namespace crypto {
 
         template<typename T>
         T substNibbles(const T& value) const {
-            size_t numNibbles = 2 * sizeof(value);
+            constexpr size_t numNibbles = 2 * sizeof(value);
             T result = 0;
             for (size_t i = 0; i < numNibbles; i++) {
                 auto shift = 4 * (numNibbles - 1 - i);
