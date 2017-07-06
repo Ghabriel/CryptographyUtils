@@ -7,9 +7,6 @@
 #include <unordered_map>
 #include "traits.hpp"
 
-#include "debug.hpp"
-#include "xtrace.hpp"
-
 namespace crypto {
     class SAES {
      public:
@@ -22,10 +19,6 @@ namespace crypto {
 
      private:
         std::vector<HalfKey> keyExpansion(const InputType& key) const;
-
-        void addKey(InputType& state, const InputType& key) const {
-            state ^= key;
-        }
 
         HalfKey rotateNibbles(const HalfKey& value) const {
             return ((value & 0x0F) << 4) | ((value & 0xF0) >> 4);
